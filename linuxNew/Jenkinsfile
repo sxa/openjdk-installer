@@ -75,14 +75,13 @@ pipeline {
                 }
                 stage('armv7l Debian packages') {
                     agent {
-                        label "docker&&linux&&armv7l"
+                        label "linux&&armv7l&&docker4G"
                     }
                     tools {
                         jdk "JDK11"
                     }
                     environment {
                         DISTRO = "Debian"
-                        JAVA_OPTIONS = "-Xmx2g"
                     }
                     steps {
                         echo "Debian Installer Job for Temurin ${VERSION} - ${DISTRO}"
