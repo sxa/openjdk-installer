@@ -102,6 +102,7 @@ pipeline {
                     }
                     environment {
                         DISTRO = "Debian"
+                        DOCKER_BUILDKIT = "0"
                     }
                     steps {
                         echo "Debian Installer Job for Temurin ${VERSION} - ${DISTRO}"
