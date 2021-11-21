@@ -75,7 +75,7 @@ pipeline {
                 }
                 stage('armv7l Debian packages') {
                     agent {
-                        label "docker&&linux&&armv7l"
+                        label "docker4G&&linux&&armv7l"
                     }
                     tools {
                         jdk "JDK11"
@@ -123,7 +123,7 @@ def setup() {
     // Docker --mount option requires BuildKit
     env.DOCKER_BUILDKIT=1
     env.COMPOSE_DOCKER_CLI_BUILD=1
-    env._JAVA_OPTIONS="-Xmx4g"
+    env._JAVA_OPTIONS="-Xmx2700M"
     checkout scm
 }
 
