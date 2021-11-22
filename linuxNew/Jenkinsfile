@@ -5,6 +5,37 @@ pipeline {
         label NODE_LABEL
     }
     stages {
+
+        stage('Linux-x64 Installers') {
+            matrix {
+                agent {
+                    label NODE_LABEL
+                }
+                tools {
+                    jdk "JDK11"
+                }
+                axes {
+                    axis {
+                        name 'DISTRO'
+                        values 'Debian', 'RedHat', 'Suse'
+                    }
+                }
+                stages {
+                    stage('Build Installer') {
+                        steps {
+                            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                                echo "Installer Job for Temurin ${VERSION} - ${DISTRO}"
+                                setup()
+                                dir('linuxNew') {
+                                    buildAndTest()
+                                }
+                                uploadArtifacts()
+                            }
+                        }
+                    }
+                }
+	    }
+        }
         stage('Run non-x64 Deb packaging in parallel') {
             parallel {
                 stage('aarch64 Debian packages') {
@@ -18,12 +49,14 @@ pipeline {
                         DISTRO = "Debian"
                     }
                     steps {
+                      catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                         echo "Debian Installer Job for Temurin ${VERSION} - ${DISTRO} on aarch64"
                         setup()
                         dir('linuxNew') {
                             buildNoTest()
                         }
                         uploadArtifacts()
+                      }
                     }
                 }
                 stage('ppc64le Debian packages') {
@@ -72,34 +105,7 @@ pipeline {
                 }
             }
         }
-        stage('Linux-x64 Installers') {
-            matrix {
-                agent {
-                    label NODE_LABEL
-                }
-                tools {
-                    jdk "JDK11"
-                }
-                axes {
-                    axis {
-                        name 'DISTRO'
-                        values 'Debian', 'RedHat', 'Suse'
-                    }
-                }
-                stages {
-                    stage('Build Installer') {
-                        steps {
-                            echo "Installer Job for Temurin ${VERSION} - ${DISTRO}"
-                            setup()
-                            dir('linuxNew') {
-                                buildAndTest()
-                            }
-                            uploadArtifacts()
-                        }
-                    }
-                }
-	    }
-        }
+
     }
 }
 
