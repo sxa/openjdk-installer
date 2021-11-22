@@ -94,6 +94,11 @@ pipeline {
                     }
                 }
                 stage('s390x Debian packages') {
+                    when {
+                       expression {
+                          return VERSION != '8'
+                       }
+                    }
                     agent {
                         label "docker&&linux&&s390x"
                     }
