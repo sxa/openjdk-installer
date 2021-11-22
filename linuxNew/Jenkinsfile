@@ -20,7 +20,7 @@ pipeline {
                     }
                 }
                 stages {
-                    stage('Build Installer') {
+                    stage('${DISTRO}/x64 installer') {
                         steps {
                             echo "Installer Job for Temurin ${VERSION} - ${DISTRO}"
                             setup()
