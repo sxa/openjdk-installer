@@ -122,7 +122,7 @@ def setup() {
     // Docker --mount option requires BuildKit
     env.DOCKER_BUILDKIT=1
     env.COMPOSE_DOCKER_CLI_BUILD=1
-    env._JAVA_OPTIONS="-Xmx4g"
+    env._JAVA_OPTIONS="-Xmx2700m"
     checkout scm
 }
 
