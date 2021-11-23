@@ -5,36 +5,6 @@ pipeline {
         label NODE_LABEL
     }
     stages {
-        stage('Linux-x64 Installers') {
-            matrix {
-                agent {
-                    label NODE_LABEL
-                }
-                tools {
-                    jdk "JDK11"
-                }
-                axes {
-                    axis {
-                        name 'DISTRO'
-                        values 'Debian', 'RedHat', 'Suse'
-                    }
-                }
-                stages {
-                    stage('Build Installer') {
-                        steps {
-                            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                                echo "Installer Job for Temurin ${VERSION} - ${DISTRO}"
-                                setup()
-                                dir('linuxNew') {
-                                    buildAndTest()
-                                }
-                                uploadArtifacts()
-                            }
-                        }
-                    }
-                }
-	    }
-        }
         stage('Run non-x64 Deb packaging in parallel') {
             parallel {
                 stage('aarch64 Debian packages') {
@@ -52,7 +22,7 @@ pipeline {
                         echo "Debian Installer Job for Temurin ${VERSION} - ${DISTRO} on aarch64"
                         setup()
                         dir('linuxNew') {
-                            buildNoTest()
+                            buildAndTest()
                         }
                         uploadArtifacts()
                       }
@@ -72,7 +42,7 @@ pipeline {
                         echo "Debian Installer Job for Temurin ${VERSION} - ${DISTRO} on ppc64le"
                         setup()
                         dir('linuxNew') {
-                            buildNoTest()
+                            buildAndTest()
                         }
                         uploadArtifacts()
                     }
@@ -97,7 +67,7 @@ pipeline {
                         echo "Debian Installer Job for Temurin ${VERSION} - ${DISTRO} so s390x"
                         setup()
                         dir('linuxNew') {
-                            buildNoTest()
+                            buildAndTest()
                         }
                         uploadArtifacts()
                     }
