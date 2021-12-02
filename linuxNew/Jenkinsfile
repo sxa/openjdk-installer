@@ -5,39 +5,29 @@ pipeline {
         label NODE_LABEL
     }
     stages {
-        stage('Linux-x64 Installers') {
-            matrix {
-                agent {
-                    label NODE_LABEL
-                }
-                tools {
-                    jdk "JDK11"
-                }
-                axes {
-                    axis {
-                        name 'DISTRO'
-                        values 'Debian', 'RedHat', 'Suse'
-                    }
-                }
-                stages {
-                    stage('Build Installer') {
-                        steps {
-                            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                                echo "Installer Job for Temurin ${VERSION} - ${DISTRO}"
-                                setup()
-                                dir('linuxNew') {
-                                    buildAndTest()
-                                }
-                                uploadArtifacts()
-                            }
-                        }
-                    }
-                }
-	    }
-        }
         stage('Run non-x64 Deb packaging in parallel') {
             parallel {
-                stage('aarch64 Debian packages') {
+                stage('armv7l Debian packages') {
+                    agent {
+                        label "docker8G&&linux&&armv7l"
+                    }
+                    tools {
+                        jdk "JDK11"
+                    }
+                    environment {
+                        DISTRO = "Debian"
+                        JAVA_OPTIONS = "-Xmx2g"
+                    }
+                    steps {
+                        echo "Debian Installer Job for Temurin ${VERSION} - ${DISTRO}"
+                        setup()
+                        dir('linuxNew') {
+                            buildNoTest()
+                        }
+                        uploadArtifacts()
+                    }
+                }
+                 stage('aarch64 Debian packages') {
                     agent {
                         label "docker&&linux&&aarch64"
                     }
