@@ -1,7 +1,7 @@
 name: Publish ca-certificates
 on:
   push:
-    branches: [ master ]
+    branches: [ cabbage ]
     paths:
       - 'linux/ca-certificates/**'
       - '.github/workflows/cacert-publish.yml'
@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   publish-ca-certificates:
-    if: github.repository == 'adoptium/installer'
+    if: github.repository == 'sxa/openjdk-installer'
     name: "Publish ca-certificates"
     runs-on: ubuntu-latest
     defaults:
